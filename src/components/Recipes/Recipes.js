@@ -7,6 +7,7 @@ const Recipes = () => {
   const { query } = useParams();
   const [search, setSearch] = useState(query);
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleInput = (e) => {
     const value = e.target.value;
@@ -21,13 +22,21 @@ const Recipes = () => {
     }
   };
   const searchRecipes = async () => {
-    const data = await fetchRecipes();
-    setRecipes(data);
+    // setLoading(true);
+    // const data = await fetchRecipes();
+    // setRecipes(data);
+    // setLoading(false);
+
+    //Alt
+    window.location.href = "/search/" + search;
   };
   useEffect(() => {
     const loadRecipes = async () => {
+      setLoading(true);
+
       const data = await fetchRecipes();
       setRecipes(data);
+      setLoading(false);
     };
     loadRecipes();
   }, []);
@@ -43,11 +52,15 @@ const Recipes = () => {
         <input value={search} onChange={handleInput} type="text" />
         <button onClick={searchRecipes}>Search</button>
       </div>
-      <div className="recipes-results">
-        {recipes.map((recipe) => {
-          return <Recipe data={recipe} />;
-        })}
-      </div>
+      {!loading ? (
+        <div className="recipes-results">
+          {recipes.map((recipe) => {
+            return <Recipe data={recipe} />;
+          })}
+        </div>
+      ) : (
+        <h1>Loading recipes</h1>
+      )}
     </div>
   );
 };
